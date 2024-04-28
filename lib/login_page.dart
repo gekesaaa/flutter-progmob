@@ -1,9 +1,20 @@
-import 'package:coba_login/register_page.dart';
 import 'package:flutter/material.dart';
-import 'dashboard_page.dart'; // Import DashboardPage
+import 'package:dio/dio.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:coba_login/dashboard_page.dart'; // Import DashboardPage
+import 'package:coba_login/register_page.dart';
+// uname : flutter@gmail.com
+//pw : flutter
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  LoginPage({Key? key}) : super(key: key);
+
+  final Dio _dio = Dio();
+  final GetStorage _storage = GetStorage();
+  final String _apiUrl = 'https://mobileapis.manpits.xyz/api';
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +38,7 @@ class LoginPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Username',
                     border: OutlineInputBorder(
@@ -39,6 +51,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20.0),
                 TextField(
+                  controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(
@@ -52,14 +65,43 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20.0),
                 ElevatedButton(
-                  onPressed: () {
-                    // Navigasi ke DashboardPage setelah login berhasil
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DashboardPage(),
-                      ),
-                    );
+                  onPressed: () async {
+                    String email = _emailController.text.trim();
+                    String password = _passwordController.text.trim();
+
+                    if (email.isEmpty || password.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Please fill in all fields.'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    try {
+                      final response = await _dio.post(
+                        '$_apiUrl/login',
+                        data: {
+                          'email': email,
+                          'password': password,
+                        },
+                      );
+                      print(response.data);
+                      _storage.write('token', response.data['data']['token']);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DashboardPage(),
+                        ),
+                      );
+                    } on DioError catch (e) {
+                      print('Error: ${e.response?.statusCode} - ${e.message}');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Login failed. Please try again.'),
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green[100],
@@ -90,10 +132,11 @@ class LoginPage extends StatelessWidget {
                         TextButton(
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const RegisterPage()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterPage(),
+                              ),
+                            );
                           },
                           child: const Text(
                             "Sign Up",

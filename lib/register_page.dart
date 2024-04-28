@@ -78,11 +78,11 @@ class RegisterPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     // Navigasi ke LoginPage setelah registrasi berhasil
-                    Navigator.pushReplacement(
+                    Navigator.pushReplacementNamed(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
+                        builder: (context) => LoginPage(),
+                      ) as String,
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -116,7 +116,7 @@ class RegisterPage extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const LoginPage()));
+                                    builder: (context) => LoginPage()));
                           },
                           child: const Text(
                             "Sign In",
