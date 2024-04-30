@@ -7,7 +7,7 @@ import 'package:coba_login/register_page.dart';
 //pw : flutter
 
 class LoginPage extends StatelessWidget {
-  LoginPage({Key? key}) : super(key: key);
+  LoginPage({super.key});
 
   final Dio _dio = Dio();
   final GetStorage _storage = GetStorage();
@@ -40,7 +40,7 @@ class LoginPage extends StatelessWidget {
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Username',
+                    labelText: 'Email',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
@@ -91,7 +91,7 @@ class LoginPage extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const DashboardPage(),
+                          builder: (context) => MainApp(),
                         ),
                       );
                     } on DioError catch (e) {
@@ -134,7 +134,7 @@ class LoginPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const RegisterPage(),
+                                builder: (context) => RegisterPage(),
                               ),
                             );
                           },
