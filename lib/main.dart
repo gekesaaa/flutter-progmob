@@ -1,9 +1,17 @@
+import 'package:coba_login/Transaksi/Tabungan.dart';
+import 'package:coba_login/Transaksi/add_Transaksi.dart';
+import 'package:coba_login/Transaksi/tabunganDetail.dart';
+import 'package:coba_login/editMember.dart';
 import 'package:coba_login/dashboard_page.dart';
+import 'package:coba_login/detailsAnggota.dart';
+import 'package:coba_login/profil_page.dart';
+import 'package:coba_login/register_page.dart';
 import 'package:coba_login/tambahAnggota.dart';
+import 'package:coba_login/viewAnggota.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:coba_login/login_page.dart';
-import 'profil_page.dart'; // Import ProfilPage.dart
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,30 +20,47 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+  MyApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
         '/': (context) => LoginPage(),
+        '/register': (context) => RegisterPage(),
         '/home': (context) => const DashboardPage(),
-        '/profil': (context) => const ProfilPage(),
+        '/profil': (context) => const ProfilePage(),
         '/addMember': (context) => const AddMemberPage(),
+        '/listMember': (context) => const ViewMembersPage(),
+        '/detailMember': (context) => const detailsMember(),
+        '/editMember': (context) => const EditMember(),
+        '/tabungan': (context) => const TabunganPage(),
+        '/tabunganDetail': (context) => const TabunganDetail(),
+        '/addTabungan': (context) => const AddTabungan(),
       },
       initialRoute: '/',
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class MainApp {
-  static void goUser(BuildContext context, String nama, String email) {
-    Navigator.pushNamed(
-      context,
-      '/profil',
-      arguments: {'nama': nama, 'email': email},
-    );
-  }
+  final _dio = Dio();
+  final _storage = GetStorage();
+  final _apiUrl = 'https://mobileapis.manpits.xyz/api';
 
-  void goLogout(BuildContext context) {}
+  void goLogout(BuildContext context) async {
+    try {
+      final _response = await _dio.get(
+        '$_apiUrl/logout',
+        options: Options(
+          headers: {'Authorization': 'Bearer ${_storage.read('token')}'},
+        ),
+      );
+      print(_response.data);
+      Navigator.pushReplacementNamed(context, '/');
+    } on DioError catch (e) {
+      print('${e.response} - ${e.response?.statusCode}');
+    }
+  }
 }

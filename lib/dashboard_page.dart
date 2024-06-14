@@ -1,73 +1,6 @@
-import 'package:coba_login/login_page.dart';
-import 'package:coba_login/tambahAnggota.dart';
-import 'package:coba_login/viewAnggota.dart';
+import 'package:coba_login/main.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
-import 'package:get_storage/get_storage.dart';
-// import 'profil_page.dart'; // Import ProfilPage.dart
-
-class MainApp extends StatelessWidget {
-  MainApp({super.key});
-
-  final _dio = Dio();
-  final _storage = GetStorage();
-  final _apiUrl = 'https://mobileapis.manpits.xyz/api';
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Navigator(
-          onGenerateRoute: (settings) {
-            if (settings.name == '/') {
-              return MaterialPageRoute(
-                builder: (context) => const DashboardPage(),
-              );
-            }
-            return MaterialPageRoute(
-              builder: (context) => LoginPage(),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  void goUser(BuildContext context) async {
-    // Mengubah goUser agar menerima context
-    try {
-      final _response = await _dio.get(
-        '$_apiUrl/user',
-        options: Options(
-          headers: {'Authorization': 'Bearer ${_storage.read('token')}'},
-        ),
-      );
-      print(_response.data);
-    } on DioException catch (e) {
-      print('${e.response} - ${e.response?.statusCode}');
-    }
-  }
-
-  void goLogout(BuildContext context) async {
-    // Mengubah goLogout agar menerima context
-    try {
-      final _response = await _dio.get(
-        '$_apiUrl/logout',
-        options: Options(
-          headers: {'Authorization': 'Bearer ${_storage.read('token')}'},
-        ),
-      );
-      print(_response.data);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
-      );
-    } on DioError catch (e) {
-      print('${e.response} - ${e.response?.statusCode}');
-    }
-  }
-}
+import 'tambahAnggota.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -77,78 +10,153 @@ class DashboardPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Dashboard',
+          'TABUNGAN SEJAHTERA',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.green[600],
-      ),
-      body: Stack(
-        children: [
-          // Your main content goes here
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/profil');
+            },
+            child: CircleAvatar(
+              radius: 20.0,
+              child: Image.asset('assets/images/profile.png'),
+            ),
+          )
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 20.0),
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const AddMemberPage()));
-          },
-          backgroundColor: Colors.green,
-          child: const Icon(Icons.add),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 10,
-        child: SizedBox(
-          height: 60.0, // Adjust the height as needed
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            unselectedItemColor: Colors.green,
-            selectedItemColor: Colors.green,
-            selectedLabelStyle: const TextStyle(color: Colors.green),
-            unselectedLabelStyle: const TextStyle(color: Colors.green),
-            onTap: (value) {
-              if (value == 0) {
-                // Home
-                print('Home');
-              } else if (value == 1) {
-                // Profile
-                MainApp().goUser(context); // Menggunakan instance yang sama
-              } else if (value == 2) {
-                // List Anggota
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ViewMembersPage()));
-              } else if (value == 3) {
-                // Logout
-                MainApp().goLogout(context); // Menggunakan instance yang sama
-              }
-            },
-            items: const [
-              BottomNavigationBarItem(
-                label: 'Home',
-                icon: Icon(Icons.home_outlined),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Kartu Detail Anggota
+              SizedBox(
+                width: double.infinity,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Anggota'),
+                        const SizedBox(height: 16.0),
+                        const Text(
+                            'Berisi list dari anggota yang ikut dalam Tabungan Sejahtera'),
+                        const SizedBox(height: 16.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(
+                                context, '/listMember');
+                          },
+                          child: const Text('Cek Anggota'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              BottomNavigationBarItem(
-                label: 'Profile',
-                icon: Icon(Icons.person_outline),
+              const SizedBox(height: 16.0),
+
+              // Kartu List Seluruh Tabungan Anggota
+              SizedBox(
+                width: double.infinity,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Tabungan Anggota'),
+                        const SizedBox(height: 16.0),
+                        const Text(
+                            'Berisi menganai detail Tabungan dari Anggota'),
+                        const SizedBox(height: 16.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/tabungan');
+                          },
+                          child: const Text('Cek Tabungan'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              BottomNavigationBarItem(
-                label: 'List Anggota',
-                icon: Icon(Icons.list_outlined),
-              ),
-              BottomNavigationBarItem(
-                label: 'Logout',
-                icon: Icon(Icons.logout_outlined),
-              )
+              const SizedBox(height: 16.0),
             ],
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddMemberPage()));
+        },
+        backgroundColor: Colors.green,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: SizedBox(
+        height: 60.0, // Adjust the height as needed
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          unselectedItemColor: Colors.green,
+          selectedItemColor: Colors.green,
+          selectedLabelStyle: const TextStyle(color: Colors.green),
+          unselectedLabelStyle: const TextStyle(color: Colors.green),
+          onTap: (value) {
+            if (value == 0) {
+              // Home
+              print('Home');
+            } else if (value == 1) {
+              // Logout
+              _showLogoutDialog(context); // Show the logout dialog
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(
+              label: 'Home',
+              icon: Icon(Icons.home_outlined),
+            ),
+            BottomNavigationBarItem(
+              label: 'Logout',
+              icon: Icon(Icons.logout_outlined),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Ingin Keluar?'),
+          content: const Text('Kamu yakin ingin Keluar?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Tidak'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Iya'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                MainApp().goLogout(context); // Call the logout function
+
+                Navigator.pushReplacementNamed(context, '/');
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

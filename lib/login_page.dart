@@ -2,18 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:coba_login/dashboard_page.dart'; // Import DashboardPage
-import 'package:coba_login/register_page.dart';
-// uname : flutter@gmail.com
-//pw : flutter
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final Dio _dio = Dio();
+
   final GetStorage _storage = GetStorage();
+
   final String _apiUrl = 'https://mobileapis.manpits.xyz/api';
 
   TextEditingController _emailController = TextEditingController();
+
   TextEditingController _passwordController = TextEditingController();
 
   @override
@@ -71,7 +76,7 @@ class LoginPage extends StatelessWidget {
 
                     if (email.isEmpty || password.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text('Please fill in all fields.'),
                         ),
                       );
@@ -91,7 +96,7 @@ class LoginPage extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MainApp(),
+                          builder: (context) => DashboardPage(),
                         ),
                       );
                     } on DioError catch (e) {
@@ -119,7 +124,6 @@ class LoginPage extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    // Widget lainnya
                     const SizedBox(height: 20.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -131,12 +135,8 @@ class LoginPage extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegisterPage(),
-                              ),
-                            );
+                            Navigator.pushReplacementNamed(
+                                context, '/register');
                           },
                           child: const Text(
                             "Sign Up",

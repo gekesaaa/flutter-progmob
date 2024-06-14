@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart'; // Import Dio
-import 'login_page.dart'; // Import LoginPage
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({Key? key});
@@ -45,16 +44,11 @@ class RegisterPage extends StatelessWidget {
         );
 
         // Navigasi kembali ke halaman login setelah registrasi berhasil
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LoginPage(),
-          ),
-        );
+        Navigator.pushReplacementNamed(context, '/');
       } else {
         print('Registrasi gagal: ${response.statusCode}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Registration failed. Please try again.'),
           ),
         );
@@ -62,7 +56,7 @@ class RegisterPage extends StatelessWidget {
     } on DioError catch (e) {
       print('Kesalahan Dio: ${e.response?.statusCode} - ${e.message}');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Registration failed. Please try again.'),
         ),
       );
@@ -160,12 +154,7 @@ class RegisterPage extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginPage(),
-                            ),
-                          );
+                          Navigator.pushReplacementNamed(context, '/');
                         },
                         child: const Text(
                           "Sign In",

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, file_names, deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:dio/dio.dart';
@@ -86,8 +88,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
                     _tglLahirController.clear();
                     _noTeleponController.clear();
                     Navigator.pop(context);
-                    Navigator.pushReplacementNamed(
-                        context, '/home'); // Navigate to home page
+                    Navigator.pushReplacementNamed(context, '/listMember');
                   },
                 ),
               ],
@@ -130,9 +131,9 @@ class _AddMemberPageState extends State<AddMemberPage> {
       appBar: AppBar(
         title: Text(
           'Tambah Anggota',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: Colors.green,
-              ),
+          // style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+          //       color: Colors.green,
+          //     ),
         ),
       ),
       body: Padding(
@@ -232,14 +233,13 @@ class _AddMemberPageState extends State<AddMemberPage> {
                             backgroundColor: Colors.green,
                             elevation: 1,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
                           ),
                           child: const Text(
                             'Tambah Anggota',
                             style: TextStyle(
-                              fontFamily: 'Poppins',
                               fontSize: 16,
                               color: Colors.white,
                             ),
