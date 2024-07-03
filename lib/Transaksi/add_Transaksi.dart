@@ -70,7 +70,7 @@ class _AddTabunganState extends State<AddTabungan> {
                 return AlertDialog(
                   backgroundColor: Colors.white,
                   title: const Text(
-                    "Transaksi Berhasil di Tambahkan",
+                    "Transaksi Berhasil di Simpan",
                   ),
                   actions: <Widget>[
                     TextButton(
@@ -137,6 +137,35 @@ class _AddTabunganState extends State<AddTabungan> {
     }
   }
 
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text("Konfirmasi"),
+          content: const Text(
+              "Apakah anda yakin ingin menambahkan nominal tabungan ini?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Batal", style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Ya", style: TextStyle(color: Colors.green)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                addSaving();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -161,7 +190,7 @@ class _AddTabunganState extends State<AddTabungan> {
         backgroundColor: const Color(0xFFFAFAFA),
         appBar: AppBar(
           title: const Text(
-            'Tambah Tabungan',
+            'Transaksi',
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: Colors.green[600],
@@ -236,7 +265,7 @@ class _AddTabunganState extends State<AddTabungan> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState?.save();
-                                addSaving();
+                                _showConfirmationDialog();
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -248,7 +277,7 @@ class _AddTabunganState extends State<AddTabungan> {
                               padding: const EdgeInsets.symmetric(vertical: 20),
                             ),
                             child: const Text(
-                              'Tambah Tabungan',
+                              'Simpan',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,

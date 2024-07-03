@@ -2,6 +2,9 @@ import 'package:coba_login/main.dart';
 import 'package:flutter/material.dart';
 import 'tambahAnggota.dart';
 
+// email : sebong17@gmail.com
+// pass : sebong17
+
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
@@ -86,6 +89,33 @@ class DashboardPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16.0),
+
+              // Kartu Untuk mengatur Bunga
+              SizedBox(
+                width: double.infinity,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Bunga'),
+                        const SizedBox(height: 16.0),
+                        const Text(
+                            'Tempat mengatur Bunga yang digunakan untuk transaksi'),
+                        const SizedBox(height: 16.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/bunga');
+                          },
+                          child: const Text('Atur Bunga'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16.0),
             ],
           ),
         ),
@@ -140,16 +170,16 @@ class DashboardPage extends StatelessWidget {
           content: const Text('Kamu yakin ingin Keluar?'),
           actions: <Widget>[
             TextButton(
-              child: const Text('Tidak'),
+              child: const Text('Tidak', style: TextStyle(color: Colors.red)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('Iya'),
+              child: const Text('Iya', style: TextStyle(color: Colors.green)),
               onPressed: () {
                 Navigator.of(context).pop();
-                MainApp().goLogout(context); // Call the logout function
+                MainApp().goLogout(context);
 
                 Navigator.pushReplacementNamed(context, '/');
               },

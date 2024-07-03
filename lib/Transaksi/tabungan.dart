@@ -33,35 +33,149 @@
 //           headers: {'Authorization': 'Bearer ${_storage.read('token')}'},
 //         ),
 //       );
-//       final responseData = _response.data;
+//       Map<String, dynamic> responseData = _response.data;
+//       print(responseData);
 //       setState(() {
 //         anggotaDatas = AnggotaDatas.fromJson(responseData);
 //         filteredAnggotaDatas = anggotaDatas?.anggotaDatas ?? [];
 //       });
-//       await fetchSaldo();
-//     } on DioError catch (e) {
-//       print('Error: ${e.response?.statusCode} - ${e.message}');
+//       await getSaldoAnggota();
+//     } on DioException catch (e) {
+//       print('${e.response} - ${e.response?.statusCode}');
+//     } catch (e) {
+//       print('Error: $e');
 //     }
 //   }
 
-//   Future<void> fetchSaldo() async {
-//     for (var anggota in filteredAnggotaDatas) {
-//       try {
-//         final _response = await _dio.get(
-//           '$_apiUrl/saldo/${anggota.id}',
-//           options: Options(
-//             headers: {'Authorization': 'Bearer ${_storage.read('token')}'},
-//           ),
-//         );
-//         final responseData = _response.data;
-//         setState(() {
-//           anggota.saldo = responseData['saldo'];
-//         });
-//       } on DioError catch (e) {
-//         print('Error: ${e.response?.statusCode} - ${e.message}');
+//   Future<void> getSaldoAnggota() async {
+//     if (anggotaDatas != null) {
+//       for (var anggota in filteredAnggotaDatas) {
+//         try {
+//           final _response = await _dio.get(
+//             '$_apiUrl/saldo/${anggota.id}',
+//             options: Options(
+//               headers: {'Authorization': 'Bearer ${_storage.read('token')}'},
+//             ),
+//           );
+//           Map<String, dynamic> responseData = _response.data;
+//           setState(() {
+//             anggota.saldo = responseData['data']['saldo'];
+//           });
+//         } on DioException catch (e) {
+//           print('${e.response} - ${e.response?.statusCode}');
+//         } catch (e) {
+//           print('Error: $e');
+//         }
 //       }
 //     }
 //   }
+
+//   void getJenisTransaksi(BuildContext context) async {
+//     const int multiplyDebit = 1;
+
+//     try {
+//       final _response = await Dio().get(
+//         '$_apiUrl/jenistransaksi',
+//         options: Options(
+//           headers: {'Authorization': 'Bearer ${_storage.read('token')}'},
+//         ),
+//       );
+//       print(_response.data);
+//       if (_response.statusCode == 200) {
+//         final jenisTransaksi = _response.data['data']['jenistransaksi'];
+//         showDialog(
+//           context: context,
+//           builder: (BuildContext context) {
+//             return Dialog(
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(5.0),
+//               ),
+//               elevation: 0.0,
+//               backgroundColor: Colors.transparent,
+//               child: Container(
+//                 padding: EdgeInsets.all(20.0),
+//                 decoration: BoxDecoration(
+//                   color: Colors.white,
+//                   borderRadius: BorderRadius.circular(10.0),
+//                   boxShadow: [
+//                     BoxShadow(
+//                       color: const Color.fromARGB(255, 68, 59, 59)
+//                           .withOpacity(0.5),
+//                       spreadRadius: 5,
+//                       blurRadius: 7,
+//                       offset: Offset(0, 3),
+//                     ),
+//                   ],
+//                 ),
+//                 child: Column(
+//                   mainAxisSize: MainAxisSize.min,
+//                   children: [
+//                     const Text(
+//                       'Jenis Transaksi',
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 20.0,
+//                       ),
+//                     ),
+//                     SizedBox(height: 20.0),
+//                     ListView.builder(
+//                       shrinkWrap: true,
+//                       itemCount: jenisTransaksi.length,
+//                       itemBuilder: (context, index) {
+//                         final transaction = jenisTransaksi[index];
+//                         return ListTile(
+//                           title: Text(
+//                             '${transaction['id']} - ${transaction['trx_name']}',
+//                             style: const TextStyle(fontWeight: FontWeight.bold),
+//                           ),
+//                           subtitle: Text(
+//                             transaction['trx_multiply'] == multiplyDebit
+//                                 ? "Debit"
+//                                 : "Kredit",
+//                             style: const TextStyle(color: Colors.grey),
+//                           ),
+//                         );
+//                       },
+//                     ),
+//                     SizedBox(height: 20.0),
+//                     Align(
+//                       alignment: Alignment.center,
+//                       child: TextButton(
+//                         onPressed: () {
+//                           Navigator.of(context).pop();
+//                         },
+//                         style: ElevatedButton.styleFrom(
+//                             elevation: 1,
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(20),
+//                             ),
+//                             padding: const EdgeInsets.symmetric(
+//                                 vertical: 15, horizontal: 80)),
+//                         child: const Text(
+//                           'Oke',
+//                           style: TextStyle(fontSize: 16, color: Colors.black),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             );
+//           },
+//         );
+//       }
+//     } on DioError catch (e) {
+//       print('${e.response} - ${e.response?.statusCode}');
+//     } catch (error) {
+//       print('Error: $error');
+//     }
+//   }
+
+//   // @override
+//   // void initState() {
+//   //   super.initState();
+//   //   getAnggota();
+//   // }
 
 //   void _filterAnggota() {
 //     final query = _searchController.text.toLowerCase();
@@ -69,7 +183,7 @@
 //       filteredAnggotaDatas = anggotaDatas?.anggotaDatas
 //               .where((anggota) =>
 //                   anggota.nama.toLowerCase().contains(query) ||
-//                   anggota.nomorInduk.toString().contains(query))
+//                   anggota.nomor_induk.toString().contains(query))
 //               .toList() ??
 //           [];
 //     });
@@ -85,7 +199,10 @@
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: const Text('Tabungan Anggota'),
+//         title: const Text(
+//           'Tabungan',
+//           style: TextStyle(color: Color.fromARGB(255, 11, 29, 12)),
+//         ),
 //         leading: IconButton(
 //           onPressed: () {
 //             Navigator.pushNamedAndRemoveUntil(
@@ -98,7 +215,7 @@
 //         ),
 //         actions: [
 //           AnimatedContainer(
-//             duration: Duration(milliseconds: 300),
+//             duration: const Duration(milliseconds: 300),
 //             width: _isSearching ? 250.0 : 48.0,
 //             child: Row(
 //               children: [
@@ -106,7 +223,7 @@
 //                     ? Expanded(
 //                         child: TextField(
 //                           controller: _searchController,
-//                           decoration: InputDecoration(
+//                           decoration: const InputDecoration(
 //                             hintText: 'Cari anggota...',
 //                             border: InputBorder.none,
 //                           ),
@@ -128,6 +245,7 @@
 //             ),
 //           ),
 //         ],
+//         automaticallyImplyLeading: false,
 //       ),
 //       body: Center(
 //         child: anggotaDatas == null || filteredAnggotaDatas.isEmpty
@@ -141,7 +259,7 @@
 //                     subtitle: Row(
 //                       children: [
 //                         Icon(Icons.account_balance_wallet, size: 14),
-//                         SizedBox(width: 6),
+//                         const SizedBox(width: 6),
 //                         Text(anggota.saldo?.toString() ?? 'Loading...'),
 //                       ],
 //                     ),
@@ -178,16 +296,6 @@
 //                 },
 //               ),
 //       ),
-//       // floatingActionButton: Padding(
-//       //   padding: const EdgeInsets.only(bottom: 40.0, right: 16.0),
-//       //   child: FloatingActionButton(
-//       //     onPressed: () {
-//       //       Navigator.pushNamed(context, '/add_tabungan');
-//       //     },
-//       //     backgroundColor: Colors.green,
-//       //     child: const Icon(Icons.add),
-//       //   ),
-//       // ),
 //     );
 //   }
 // }
@@ -213,37 +321,54 @@
 
 // class Anggota {
 //   final int id;
-//   final int nomorInduk;
+//   final int nomor_induk;
 //   final String nama;
 //   final String alamat;
-//   final String tglLahir;
+//   final String tgl_lahir;
 //   final String telepon;
-//   final String? imageUrl;
-//   final int? statusAktif;
-//   int? saldo; // Added saldo field
+//   final int? status_aktif;
+//   int saldo; // Add this field for saldo
 
 //   Anggota({
 //     required this.id,
-//     required this.nomorInduk,
+//     required this.nomor_induk,
 //     required this.nama,
 //     required this.alamat,
-//     required this.tglLahir,
+//     required this.tgl_lahir,
 //     required this.telepon,
-//     this.imageUrl,
-//     this.statusAktif,
-//     this.saldo, // Initialize saldo field
+//     required this.status_aktif,
+//     required this.saldo, // Initialize saldo in the constructor
 //   });
 
 //   factory Anggota.fromJson(Map<String, dynamic> json) {
 //     return Anggota(
 //       id: json['id'],
-//       nomorInduk: json['nomor_induk'],
+//       nomor_induk: json['nomor_induk'],
 //       nama: json['nama'],
 //       alamat: json['alamat'],
-//       tglLahir: json['tgl_lahir'],
+//       tgl_lahir: json['tgl_lahir'],
 //       telepon: json['telepon'],
-//       imageUrl: json['image_url'],
-//       statusAktif: json['status_aktif'],
+//       status_aktif: json['status_aktif'],
+//       saldo: 0, // Default saldo to 0, it will be updated later
+//     );
+//   }
+// }
+
+// class TransactionDetailPage extends StatelessWidget {
+//   final int memberId;
+
+//   const TransactionDetailPage({super.key, required this.memberId});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // Implement your TransactionDetailPage here
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Detail Transaksi'),
+//       ),
+//       body: Center(
+//         child: Text('Detail Transaksi untuk anggota ID: $memberId'),
+//       ),
 //     );
 //   }
 // }
@@ -251,6 +376,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 class TabunganPage extends StatefulWidget {
   const TabunganPage({super.key});
@@ -363,9 +489,7 @@ class _TabunganPageState extends State<TabunganPage> {
                     const Text(
                       'Jenis Transaksi',
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                      ),
+                          fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
                     SizedBox(height: 20.0),
                     ListView.builder(
@@ -421,12 +545,6 @@ class _TabunganPageState extends State<TabunganPage> {
     }
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getAnggota();
-  // }
-
   void _filterAnggota() {
     final query = _searchController.text.toLowerCase();
     setState(() {
@@ -451,8 +569,9 @@ class _TabunganPageState extends State<TabunganPage> {
       appBar: AppBar(
         title: const Text(
           'Tabungan',
-          style: TextStyle(color: Color.fromARGB(255, 11, 29, 12)),
+          style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: Colors.green[600],
         leading: IconButton(
           onPressed: () {
             Navigator.pushNamedAndRemoveUntil(
@@ -464,35 +583,34 @@ class _TabunganPageState extends State<TabunganPage> {
           ),
         ),
         actions: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            width: _isSearching ? 250.0 : 48.0,
-            child: Row(
-              children: [
-                _isSearching
-                    ? Expanded(
-                        child: TextField(
-                          controller: _searchController,
-                          decoration: const InputDecoration(
-                            hintText: 'Cari anggota...',
-                            border: InputBorder.none,
-                          ),
+          Row(
+            children: [
+              _isSearching
+                  ? Container(
+                      width: 200.0,
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Cari anggota...',
+                          border: InputBorder.none,
+                          filled: true,
+                          fillColor: Colors.white,
                         ),
-                      )
-                    : Container(),
-                IconButton(
-                  icon: Icon(_isSearching ? Icons.close : Icons.search),
-                  onPressed: () {
-                    setState(() {
-                      if (_isSearching) {
-                        _searchController.clear();
-                      }
-                      _isSearching = !_isSearching;
-                    });
-                  },
-                ),
-              ],
-            ),
+                      ),
+                    )
+                  : Container(),
+              IconButton(
+                icon: Icon(_isSearching ? Icons.close : Icons.search),
+                onPressed: () {
+                  setState(() {
+                    if (_isSearching) {
+                      _searchController.clear();
+                    }
+                    _isSearching = !_isSearching;
+                  });
+                },
+              ),
+            ],
           ),
         ],
         automaticallyImplyLeading: false,
@@ -510,7 +628,12 @@ class _TabunganPageState extends State<TabunganPage> {
                       children: [
                         Icon(Icons.account_balance_wallet, size: 14),
                         const SizedBox(width: 6),
-                        Text(anggota.saldo?.toString() ?? 'Loading...'),
+                        Text(
+                          NumberFormat.currency(
+                            locale: 'id_ID',
+                            symbol: 'Rp.',
+                          ).format(anggota.saldo),
+                        ),
                       ],
                     ),
                     trailing: Row(
@@ -577,7 +700,7 @@ class Anggota {
   final String tgl_lahir;
   final String telepon;
   final int? status_aktif;
-  int saldo; // Add this field for saldo
+  int saldo;
 
   Anggota({
     required this.id,
@@ -587,7 +710,7 @@ class Anggota {
     required this.tgl_lahir,
     required this.telepon,
     required this.status_aktif,
-    required this.saldo, // Initialize saldo in the constructor
+    required this.saldo,
   });
 
   factory Anggota.fromJson(Map<String, dynamic> json) {
@@ -599,7 +722,7 @@ class Anggota {
       tgl_lahir: json['tgl_lahir'],
       telepon: json['telepon'],
       status_aktif: json['status_aktif'],
-      saldo: 0, // Default saldo to 0, it will be updated later
+      saldo: 0,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:coba_login/Transaksi/Tabungan.dart';
 import 'package:coba_login/Transaksi/add_Transaksi.dart';
+import 'package:coba_login/Transaksi/bunga.dart';
 import 'package:coba_login/Transaksi/tabunganDetail.dart';
 import 'package:coba_login/editMember.dart';
 import 'package:coba_login/dashboard_page.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/tabungan': (context) => const TabunganPage(),
         '/tabunganDetail': (context) => const TabunganDetail(),
         '/addTabungan': (context) => const AddTabungan(),
+        '/bunga': (context) => const AddBunga(),
       },
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
