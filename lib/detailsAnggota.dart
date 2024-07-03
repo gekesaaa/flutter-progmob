@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 class detailsMember extends StatefulWidget {
   const detailsMember({super.key});
@@ -11,6 +12,7 @@ class detailsMember extends StatefulWidget {
 
 class _UserDetailState extends State<detailsMember> {
   Anggota? anggota;
+  double? totalSaldo;
   int id = 0;
   final _dio = Dio();
   final _storage = GetStorage();
@@ -22,6 +24,7 @@ class _UserDetailState extends State<detailsMember> {
     if (ModalRoute.of(context)?.settings.arguments != null) {
       id = ModalRoute.of(context)?.settings.arguments as int;
       getDetail();
+      getSaldo();
     }
   }
 
@@ -44,6 +47,41 @@ class _UserDetailState extends State<detailsMember> {
     }
   }
 
+  Future<void> getSaldo() async {
+    try {
+      final _response = await _dio.get(
+        '$_apiUrl/saldo/$id',
+        options: Options(
+          headers: {'Authorization': 'Bearer ${_storage.read('token')}'},
+        ),
+      );
+      Map<String, dynamic> responseData = _response.data;
+      if (responseData['success']) {
+        setState(() {
+          totalSaldo = responseData['data']['saldo'].toDouble();
+        });
+      }
+    } on DioException catch (e) {
+      print('${e.response} - ${e.response?.statusCode}');
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Oops!"),
+              content: Text(e.response?.data['message'] ?? 'An error occurred'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -54,11 +92,13 @@ class _UserDetailState extends State<detailsMember> {
     return Scaffold(
       backgroundColor: Color(0xFFFAFAFA),
       appBar: AppBar(
+        backgroundColor: Colors.green,
         title: const Row(
           children: [
             SizedBox(width: 8),
             Text(
               'Detail Anggota',
+              style: TextStyle(color: Colors.white),
             ),
           ],
         ),
@@ -94,7 +134,12 @@ class _UserDetailState extends State<detailsMember> {
                         _buildBorderedText(
                             "Tanggal Lahir", "${anggota?.tgl_lahir}"),
                         _buildBorderedText("Telepon", "${anggota?.telepon}"),
-                        const SizedBox(height: 16),
+                        _buildBorderedText(
+                            "Status", "${anggota?.statusAktifText}"),
+                        totalSaldo != null
+                            ? _buildBorderedText("Total Saldo",
+                                "Rp. ${NumberFormat.currency(locale: 'id_ID', symbol: '').format(totalSaldo)}")
+                            : const CircularProgressIndicator(),
                       ],
                     ),
                   ),
@@ -175,12 +220,24 @@ class Anggota {
 
     throw Exception('Failed to parse Anggota from JSON');
   }
+
+  String get statusAktifText {
+    if (status_aktif == 1) {
+      return "Aktif";
+    } else {
+      return "Tidak Aktif";
+    }
+  }
 }
 
 
 
 
 
+
+
+
+// // KODE UDAH JALAN, KURANG MENAMPILKAN TOTAL TABUNGANNYA
 // import 'package:flutter/material.dart';
 // import 'package:get_storage/get_storage.dart';
 // import 'package:dio/dio.dart';
@@ -237,18 +294,19 @@ class Anggota {
 //     return Scaffold(
 //       backgroundColor: Color(0xFFFAFAFA),
 //       appBar: AppBar(
+//         backgroundColor: Colors.green,
 //         title: const Row(
 //           children: [
 //             SizedBox(width: 8),
 //             Text(
 //               'Detail Anggota',
+//               style: TextStyle(color: Colors.white),
 //             ),
 //           ],
 //         ),
 //         leading: IconButton(
 //           onPressed: () {
-//             Navigator.pushNamedAndRemoveUntil(
-//                 context, '/listMember', (route) => false);
+//             Navigator.pushNamed(context, '/listMember');
 //           },
 //           icon: const Icon(
 //             Icons.arrow_back,
@@ -261,18 +319,29 @@ class Anggota {
 //           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
 //           child: anggota == null
 //               ? const Text("Belum ada anggota")
-//               : Column(
-//                   crossAxisAlignment: CrossAxisAlignment.stretch,
-//                   children: [
-//                     _buildBorderedText(
-//                         "Nomor Induk", "${anggota?.nomor_induk}"),
-//                     _buildBorderedText("Nama", "${anggota?.nama}"),
-//                     _buildBorderedText("Alamat", "${anggota?.alamat}"),
-//                     _buildBorderedText(
-//                         "Tanggal Lahir", "${anggota?.tgl_lahir}"),
-//                     _buildBorderedText("Telepon", "${anggota?.telepon}"),
-//                     const SizedBox(height: 16),
-//                   ],
+//               : Card(
+//                   elevation: 4,
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(12),
+//                   ),
+//                   child: Padding(
+//                     padding: const EdgeInsets.all(16),
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.stretch,
+//                       children: [
+//                         _buildBorderedText(
+//                             "Nomor Induk", "${anggota?.nomor_induk}"),
+//                         _buildBorderedText("Nama", "${anggota?.nama}"),
+//                         _buildBorderedText("Alamat", "${anggota?.alamat}"),
+//                         _buildBorderedText(
+//                             "Tanggal Lahir", "${anggota?.tgl_lahir}"),
+//                         _buildBorderedText("Telepon", "${anggota?.telepon}"),
+//                         _buildBorderedText(
+//                             "Status", "${anggota?.statusAktifText}"),
+//                         const SizedBox(height: 16),
+//                       ],
+//                     ),
+//                   ),
 //                 ),
 //         ),
 //       ),
@@ -283,6 +352,14 @@ class Anggota {
 //     return Container(
 //       margin: const EdgeInsets.symmetric(vertical: 8),
 //       padding: const EdgeInsets.all(8),
+//       decoration: BoxDecoration(
+//         border: Border(
+//           bottom: BorderSide(
+//             color: Colors.grey.shade300,
+//             width: 1,
+//           ),
+//         ),
+//       ),
 //       child: Column(
 //         crossAxisAlignment: CrossAxisAlignment.start,
 //         children: [
@@ -341,5 +418,13 @@ class Anggota {
 //     }
 
 //     throw Exception('Failed to parse Anggota from JSON');
+//   }
+
+//   String get statusAktifText {
+//     if (status_aktif == 1) {
+//       return "Aktif";
+//     } else {
+//       return "Tidak Aktif";
+//     }
 //   }
 // }

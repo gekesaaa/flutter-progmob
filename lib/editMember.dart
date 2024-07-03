@@ -25,6 +25,8 @@ class _EditMemberState extends State<EditMember> {
   int id = 0;
   DateTime? _tglLahir;
   bool _isDetailLoaded = false;
+  String? _selectedStatusAktif;
+  List<String> _statusAktifOptions = ['Aktif', 'Tidak Aktif'];
 
   @override
   void didChangeDependencies() {
@@ -55,6 +57,8 @@ class _EditMemberState extends State<EditMember> {
         _tglLahirController.text = anggota?.tgl_lahir.toString() ?? '';
         _noTeleponController.text = anggota?.telepon.toString() ?? '';
         _tglLahir = DateFormat("yyyy-MM-dd").parse(_tglLahirController.text);
+        _selectedStatusAktif =
+            anggota?.status_aktif == 1 ? 'Aktif' : 'Tidak Aktif';
       });
     } on DioException catch (e) {
       print('${e.response} - ${e.response?.statusCode}');
@@ -71,7 +75,7 @@ class _EditMemberState extends State<EditMember> {
           'alamat': _alamatController.text,
           'tgl_lahir': _tglLahirController.text,
           'telepon': _noTeleponController.text,
-          'status_aktif': anggota?.status_aktif
+          'status_aktif': _selectedStatusAktif == 'Aktif' ? 1 : 0,
         },
         options: Options(
           headers: {
@@ -172,7 +176,9 @@ class _EditMemberState extends State<EditMember> {
       appBar: AppBar(
         title: const Text(
           'Edit Anggota',
+          style: TextStyle(color: Colors.white),
         ),
+        backgroundColor: Colors.green[600],
         leading: IconButton(
           onPressed: () {
             Navigator.pushReplacementNamed(context, '/listMember');
@@ -276,6 +282,33 @@ class _EditMemberState extends State<EditMember> {
                         border: OutlineInputBorder(),
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      value: _selectedStatusAktif,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedStatusAktif = newValue;
+                        });
+                      },
+                      items: _statusAktifOptions
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      decoration: const InputDecoration(
+                        labelText: 'Status Aktif',
+                        hintText: 'Pilih status aktif',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Pilih status aktif';
+                        }
+                        return null;
+                      },
+                    ),
                     const SizedBox(height: 20),
                     Row(
                       children: [
@@ -352,7 +385,6 @@ class Anggota {
       }
     }
 
-    // If data or anggotaData is null, throw an exception or return a default instance
     throw Exception('Failed to parse Anggota from JSON');
   }
 }

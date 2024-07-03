@@ -89,7 +89,17 @@ class _LoginPageState extends State<LoginPage> {
                     if (email.isEmpty || password.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Please fill in all fields.'),
+                          content: Text('Data Tidak Boleh Kosong'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    if (!email.endsWith('@gmail.com')) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Email harus menggunakan akhiran @gmail.com'),
                         ),
                       );
                       return;
@@ -181,6 +191,12 @@ class _LoginPageState extends State<LoginPage> {
 
 
 
+
+
+
+
+
+
 // import 'package:flutter/material.dart';
 // import 'package:dio/dio.dart';
 // import 'package:get_storage/get_storage.dart';
@@ -203,6 +219,8 @@ class _LoginPageState extends State<LoginPage> {
 //   TextEditingController _emailController = TextEditingController();
 
 //   TextEditingController _passwordController = TextEditingController();
+
+//   bool _obscureText = true;
 
 //   @override
 //   Widget build(BuildContext context) {
@@ -246,10 +264,20 @@ class _LoginPageState extends State<LoginPage> {
 //                       borderRadius: BorderRadius.circular(30.0),
 //                     ),
 //                     prefixIcon: const Icon(Icons.lock),
+//                     suffixIcon: IconButton(
+//                       icon: Icon(
+//                         _obscureText ? Icons.visibility_off : Icons.visibility,
+//                       ),
+//                       onPressed: () {
+//                         setState(() {
+//                           _obscureText = !_obscureText;
+//                         });
+//                       },
+//                     ),
 //                     filled: true,
 //                     fillColor: Colors.white.withOpacity(0.8),
 //                   ),
-//                   obscureText: true,
+//                   obscureText: _obscureText,
 //                 ),
 //                 const SizedBox(height: 20.0),
 //                 ElevatedButton(

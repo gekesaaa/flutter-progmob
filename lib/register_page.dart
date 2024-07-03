@@ -1,3 +1,4 @@
+// KODE REGISTER BERHASIL DAN SUDAH BERISI VALIDASI EMAIL
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart'; // Import Dio
 
@@ -7,7 +8,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final Dio _dio = Dio(); // Dio instance for API calls
+  final Dio _dio = Dio();
   final String _apiUrl = 'https://mobileapis.manpits.xyz/api';
 
   final TextEditingController _fullNameController = TextEditingController();
@@ -24,7 +25,16 @@ class _RegisterPageState extends State<RegisterPage> {
     if (name.isEmpty || email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please fill in all fields.'),
+          content: Text('Data Tidak Boleh Kosong'),
+        ),
+      );
+      return;
+    }
+
+    if (!email.endsWith('@gmail.com')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email harus menggunakan akhiran @gmail.com'),
         ),
       );
       return;
@@ -50,18 +60,18 @@ class _RegisterPageState extends State<RegisterPage> {
 
         Navigator.pushReplacementNamed(context, '/');
       } else {
-        print('Registrasi gagal: ${response.statusCode}');
+        print('Registration failed: ${response.statusCode}');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Registration failed. Please try again.'),
+            content: Text('Registration failed. Silahkan Coba Lagi'),
           ),
         );
       }
     } on DioError catch (e) {
-      print('Kesalahan Dio: ${e.response?.statusCode} - ${e.message}');
+      print('Dio error: ${e.response?.statusCode} - ${e.message}');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Registration failed. Please try again.'),
+          content: Text('Registration failed. Silahkan Coba Lagi'),
         ),
       );
     }
@@ -83,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Image.asset(
-                'assets/images/logo_harvesthub.png', // Ensure image path is correct
+                'assets/images/logo_harvesthub.png',
                 height: 200,
                 width: 200,
               ),
@@ -141,7 +151,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () => _register(context), // Call register method
+                onPressed: () => _register(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green[100],
                   padding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -158,7 +168,6 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               Column(
                 children: [
-                  // Widget lainnya
                   const SizedBox(height: 20.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -196,18 +205,28 @@ class _RegisterPageState extends State<RegisterPage> {
 
 
 
+
+
+
+
+// REGISTER SUDAH BISA DI GUNAKAN NAMUN BELUM BERISI VALIDASI EMAIL
 // import 'package:flutter/material.dart';
 // import 'package:dio/dio.dart'; // Import Dio
 
-// class RegisterPage extends StatelessWidget {
-//   RegisterPage({Key? key});
+// class RegisterPage extends StatefulWidget {
+//   @override
+//   _RegisterPageState createState() => _RegisterPageState();
+// }
 
-//   final Dio _dio = Dio(); // Dio instance for API calls
+// class _RegisterPageState extends State<RegisterPage> {
+//   final Dio _dio = Dio(); 
 //   final String _apiUrl = 'https://mobileapis.manpits.xyz/api';
 
 //   final TextEditingController _fullNameController = TextEditingController();
 //   final TextEditingController _emailController = TextEditingController();
 //   final TextEditingController _passwordController = TextEditingController();
+
+//   bool _isPasswordVisible = false;
 
 //   Future<void> _register(BuildContext context) async {
 //     String name = _fullNameController.text.trim();
@@ -276,7 +295,7 @@ class _RegisterPageState extends State<RegisterPage> {
 //             crossAxisAlignment: CrossAxisAlignment.stretch,
 //             children: <Widget>[
 //               Image.asset(
-//                 'assets/images/logo_harvesthub.png', // Ensure image path is correct
+//                 'assets/images/logo_harvesthub.png',
 //                 height: 200,
 //                 width: 200,
 //               ),
@@ -317,12 +336,24 @@ class _RegisterPageState extends State<RegisterPage> {
 //                   prefixIcon: const Icon(Icons.lock),
 //                   filled: true,
 //                   fillColor: Colors.white.withOpacity(0.8),
+//                   suffixIcon: IconButton(
+//                     icon: Icon(
+//                       _isPasswordVisible
+//                           ? Icons.visibility
+//                           : Icons.visibility_off,
+//                     ),
+//                     onPressed: () {
+//                       setState(() {
+//                         _isPasswordVisible = !_isPasswordVisible;
+//                       });
+//                     },
+//                   ),
 //                 ),
-//                 obscureText: true,
+//                 obscureText: !_isPasswordVisible,
 //               ),
 //               const SizedBox(height: 20.0),
 //               ElevatedButton(
-//                 onPressed: () => _register(context), // Call register method
+//                 onPressed: () => _register(context),
 //                 style: ElevatedButton.styleFrom(
 //                   backgroundColor: Colors.green[100],
 //                   padding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -339,7 +370,6 @@ class _RegisterPageState extends State<RegisterPage> {
 //               ),
 //               Column(
 //                 children: [
-//                   // Widget lainnya
 //                   const SizedBox(height: 20.0),
 //                   Row(
 //                     mainAxisAlignment: MainAxisAlignment.center,

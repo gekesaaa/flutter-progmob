@@ -1,4 +1,4 @@
-// isi searching dan filter anggota
+// udah isi searching dan filter anggota
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:dio/dio.dart';
@@ -193,9 +193,9 @@ class _ViewAnggotaState extends State<ViewMembersPage> {
                     title: Text(anggota.nama),
                     subtitle: Row(
                       children: [
-                        Icon(Icons.phone, size: 14),
+                        Icon(Icons.person, size: 14),
                         SizedBox(width: 6),
-                        Text(anggota.telepon),
+                        Text(anggota.nomorInduk.toString()),
                       ],
                     ),
                     trailing: PopupMenuButton<String>(
