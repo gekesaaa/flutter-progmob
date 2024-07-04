@@ -1,4 +1,6 @@
-// udah isi searching dan filter anggota
+// KODE DONE
+
+import 'package:coba_login/tambahAnggota.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:dio/dio.dart';
@@ -198,43 +200,62 @@ class _ViewAnggotaState extends State<ViewMembersPage> {
                         Text(anggota.nomorInduk.toString()),
                       ],
                     ),
-                    trailing: PopupMenuButton<String>(
-                      onSelected: (String result) {
-                        if (result == 'Detail') {
-                          Navigator.pushNamed(
-                            context,
-                            '/detailMember',
-                            arguments: anggota.id,
-                          );
-                        } else if (result == 'Edit') {
-                          Navigator.pushNamed(
-                            context,
-                            '/editMember',
-                            arguments: anggota.id,
-                          );
-                        } else if (result == 'Hapus') {
-                          hapusMember(anggota.id);
-                        }
-                      },
-                      itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
-                          value: 'Detail',
-                          child: Text('Detail'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        PopupMenuButton<String>(
+                          onSelected: (String result) {
+                            if (result == 'Detail') {
+                              Navigator.pushNamed(
+                                context,
+                                '/detailMember',
+                                arguments: anggota.id,
+                              );
+                            } else if (result == 'Edit') {
+                              Navigator.pushNamed(
+                                context,
+                                '/editMember',
+                                arguments: anggota.id,
+                              );
+                            }
+                          },
+                          itemBuilder: (BuildContext context) =>
+                              <PopupMenuEntry<String>>[
+                            const PopupMenuItem<String>(
+                              value: 'Detail',
+                              child: Text('Detail'),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'Edit',
+                              child: Text('Edit'),
+                            ),
+                          ],
                         ),
-                        const PopupMenuItem<String>(
-                          value: 'Edit',
-                          child: Text('Edit'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'Hapus',
-                          child: Text('Hapus'),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            hapusMember(anggota.id);
+                          },
                         ),
                       ],
                     ),
                   );
                 },
               ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddMemberPage()),
+          );
+
+          if (result == true) {
+            getAnggota();
+          }
+        },
+        backgroundColor: Colors.green,
+        child: const Icon(Icons.add),
       ),
     );
   }

@@ -1,6 +1,5 @@
-// KODE REGISTER BERHASIL DAN SUDAH BERISI VALIDASI EMAIL
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart'; // Import Dio
+import 'package:dio/dio.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -14,15 +13,22 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   Future<void> _register(BuildContext context) async {
     String name = _fullNameController.text.trim();
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
+    String confirmPassword = _confirmPasswordController.text.trim();
 
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+    if (name.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Data Tidak Boleh Kosong'),
@@ -35,6 +41,15 @@ class _RegisterPageState extends State<RegisterPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Email harus menggunakan akhiran @gmail.com'),
+        ),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Password dan Konfirmasi Password tidak sama'),
         ),
       );
       return;
@@ -150,6 +165,32 @@ class _RegisterPageState extends State<RegisterPage> {
                 obscureText: !_isPasswordVisible,
               ),
               const SizedBox(height: 20.0),
+              TextField(
+                controller: _confirmPasswordController,
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  prefixIcon: const Icon(Icons.lock),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(0.8),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isConfirmPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                      });
+                    },
+                  ),
+                ),
+                obscureText: !_isConfirmPasswordVisible,
+              ),
+              const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () => _register(context),
                 style: ElevatedButton.styleFrom(
@@ -204,14 +245,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
 
 
-
-
-
-
-
-// REGISTER SUDAH BISA DI GUNAKAN NAMUN BELUM BERISI VALIDASI EMAIL
+// // KODE REGISTER BERHASIL DAN SUDAH BERISI VALIDASI EMAIL TAPI BELUM ISI KONFIRMASI PASSWORD
 // import 'package:flutter/material.dart';
-// import 'package:dio/dio.dart'; // Import Dio
+// import 'package:dio/dio.dart';
 
 // class RegisterPage extends StatefulWidget {
 //   @override
@@ -219,7 +255,7 @@ class _RegisterPageState extends State<RegisterPage> {
 // }
 
 // class _RegisterPageState extends State<RegisterPage> {
-//   final Dio _dio = Dio(); 
+//   final Dio _dio = Dio();
 //   final String _apiUrl = 'https://mobileapis.manpits.xyz/api';
 
 //   final TextEditingController _fullNameController = TextEditingController();
@@ -236,7 +272,16 @@ class _RegisterPageState extends State<RegisterPage> {
 //     if (name.isEmpty || email.isEmpty || password.isEmpty) {
 //       ScaffoldMessenger.of(context).showSnackBar(
 //         const SnackBar(
-//           content: Text('Please fill in all fields.'),
+//           content: Text('Data Tidak Boleh Kosong'),
+//         ),
+//       );
+//       return;
+//     }
+
+//     if (!email.endsWith('@gmail.com')) {
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         const SnackBar(
+//           content: Text('Email harus menggunakan akhiran @gmail.com'),
 //         ),
 //       );
 //       return;
@@ -262,18 +307,18 @@ class _RegisterPageState extends State<RegisterPage> {
 
 //         Navigator.pushReplacementNamed(context, '/');
 //       } else {
-//         print('Registrasi gagal: ${response.statusCode}');
+//         print('Registration failed: ${response.statusCode}');
 //         ScaffoldMessenger.of(context).showSnackBar(
 //           const SnackBar(
-//             content: Text('Registration failed. Please try again.'),
+//             content: Text('Registration failed. Silahkan Coba Lagi'),
 //           ),
 //         );
 //       }
 //     } on DioError catch (e) {
-//       print('Kesalahan Dio: ${e.response?.statusCode} - ${e.message}');
+//       print('Dio error: ${e.response?.statusCode} - ${e.message}');
 //       ScaffoldMessenger.of(context).showSnackBar(
 //         const SnackBar(
-//           content: Text('Registration failed. Please try again.'),
+//           content: Text('Registration failed. Silahkan Coba Lagi'),
 //         ),
 //       );
 //     }

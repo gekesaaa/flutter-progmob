@@ -142,6 +142,33 @@ class _EditMemberState extends State<EditMember> {
     }
   }
 
+  Future<void> _confirmEditMember() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Konfirmasi"),
+          content: const Text("Apakah data yang di edit sudah sesuai?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Batal", style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: const Text("Ya", style: TextStyle(color: Colors.green)),
+              onPressed: () {
+                Navigator.pop(context);
+                goEditUser();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _selectDate() async {
     DateTime? _picked = await showDatePicker(
       context: context,
@@ -317,7 +344,7 @@ class _EditMemberState extends State<EditMember> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState?.save();
-                                goEditUser();
+                                _confirmEditMember();
                               }
                             },
                             style: ElevatedButton.styleFrom(

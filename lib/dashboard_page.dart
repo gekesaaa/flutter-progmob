@@ -1,6 +1,6 @@
 import 'package:coba_login/main.dart';
 import 'package:flutter/material.dart';
-import 'tambahAnggota.dart';
+// import 'tambahAnggota.dart';
 
 // email : sebong17@gmail.com
 // pass : sebong17
@@ -120,14 +120,14 @@ class DashboardPage extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddMemberPage()));
-        },
-        backgroundColor: Colors.green,
-        child: const Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(context,
+      //         MaterialPageRoute(builder: (context) => const AddMemberPage()));
+      //   },
+      //   backgroundColor: Colors.green,
+      //   child: const Icon(Icons.add),
+      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: SizedBox(
         height: 60.0, // Adjust the height as needed
