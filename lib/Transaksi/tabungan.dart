@@ -59,9 +59,11 @@ class _TabunganPageState extends State<TabunganPage> {
             ),
           );
           Map<String, dynamic> responseData = _response.data;
-          setState(() {
-            anggota.saldo = responseData['data']['saldo'];
-          });
+          if (mounted) {
+            setState(() {
+              anggota.saldo = responseData['data']['saldo'];
+            });
+          }
         } on DioException catch (e) {
           print('${e.response} - ${e.response?.statusCode}');
         } catch (e) {
@@ -238,7 +240,6 @@ class _TabunganPageState extends State<TabunganPage> {
             ],
           ),
         ],
-        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: anggotaDatas == null || filteredAnggotaDatas.isEmpty
@@ -259,6 +260,9 @@ class _TabunganPageState extends State<TabunganPage> {
                             symbol: 'Rp.',
                           ).format(anggota.saldo),
                         ),
+                        Icon(Icons.telegram, size: 14),
+                        SizedBox(width: 6),
+                        Text(anggota.telepon),
                       ],
                     ),
                     trailing: Row(
@@ -359,7 +363,6 @@ class TransactionDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Implement your TransactionDetailPage here
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Transaksi'),

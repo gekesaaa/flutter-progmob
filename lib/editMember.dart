@@ -129,6 +129,7 @@ class _EditMemberState extends State<EditMember> {
                 TextButton(
                   child: Text("OK"),
                   onPressed: () {
+                    Navigator.of(context).pop();
                     Navigator.pushNamed(
                       context,
                       '/detail',

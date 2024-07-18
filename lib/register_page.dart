@@ -64,24 +64,56 @@ class _RegisterPageState extends State<RegisterPage> {
           'password': password,
         },
       );
+      print('Response:${response.data}');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              dialogBackgroundColor: Colors.white,
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.green[600],
+                ),
+              ),
+            ),
+            child: AlertDialog(
+              title: const Text(
+                  "Regis Berhasil Dilakukan, Silahkan Lanjutkan Dengan Login",
+                  style: TextStyle(color: Colors.black)),
+              actions: <Widget>[
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(
+                      context,
+                      '/',
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+      // if (response.statusCode == 200) {
+      //   print('Response:${response.data}');
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //       content: Text('Registration successful. Please login.'),
+      //     ),
+      //   );
 
-      if (response.statusCode == 200) {
-        print('Response:${response.data}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration successful. Please login.'),
-          ),
-        );
-
-        Navigator.pushReplacementNamed(context, '/');
-      } else {
-        print('Registration failed: ${response.statusCode}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration failed. Silahkan Coba Lagi'),
-          ),
-        );
-      }
+      //   Navigator.pushReplacementNamed(context, '/');
+      // } else {
+      //   print('Registration failed: ${response.statusCode}');
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //       content: Text('Registration failed. Silahkan Coba Lagi'),
+      //     ),
+      //   );
+      // }
     } on DioError catch (e) {
       print('Dio error: ${e.response?.statusCode} - ${e.message}');
       ScaffoldMessenger.of(context).showSnackBar(

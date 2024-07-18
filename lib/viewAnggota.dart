@@ -198,6 +198,9 @@ class _ViewAnggotaState extends State<ViewMembersPage> {
                         Icon(Icons.person, size: 14),
                         SizedBox(width: 6),
                         Text(anggota.nomorInduk.toString()),
+                        Icon(Icons.telegram, size: 14),
+                        SizedBox(width: 6),
+                        Text(anggota.telepon),
                       ],
                     ),
                     trailing: Row(
